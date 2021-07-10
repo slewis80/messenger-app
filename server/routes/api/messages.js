@@ -13,8 +13,18 @@ router.post("/", async (req, res, next) => {
 
     // if we already know conversation id, we can save time and just add it to message and return
     if (conversationId) {
-      const message = await Message.create({ senderId, text, conversationId });
-      return res.json({ message, sender });
+      let conversation = await Conversation.findConversation(
+        senderId,
+        recipientId
+      )
+      if (conversation.user1Id != senderId && conversation.user2Id != senderId){
+        const error = new Error("You cannot post to a private conversation.")
+        res.status(403)
+        return next(error)
+      } else {
+        const message = await Message.create({ senderId, text, conversationId });
+        return res.json({ message, sender });  
+      }
     }
     // if we don't have conversation id, find a conversation to make sure it doesn't already exist
     let conversation = await Conversation.findConversation(
