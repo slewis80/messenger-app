@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Box } from "@material-ui/core";
+import { Badge, Box } from "@material-ui/core";
 import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { withStyles } from "@material-ui/core/styles";
 import { setActiveChat } from "../../store/activeConversation";
@@ -39,6 +39,12 @@ class Chat extends Component {
           sidebar={true}
         />
         <ChatContent conversation={this.props.conversation} />
+        <Badge 
+          color="primary" 
+          style={{ marginRight: "30px" }}
+          anchorOrigin={{ horizontal: "left", vertical: "top" }}
+          badgeContent={5}
+        />
       </Box>
     );
   }

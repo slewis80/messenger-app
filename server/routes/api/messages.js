@@ -17,6 +17,7 @@ router.post("/", async (req, res, next) => {
         senderId,
         recipientId
       )
+      // error if trying to post to someone else's conversation
       if (conversation.user1Id != senderId && conversation.user2Id != senderId){
         const error = new Error("You cannot post to a private conversation.")
         res.status(403)
