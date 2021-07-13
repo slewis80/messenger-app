@@ -83,6 +83,13 @@ const saveMessage = async (body) => {
   return data;
 };
 
+const markMessageAsRead = async (message) => {
+  let messageId = message.id
+  console.log(message)
+  const { data } = await axios.put(`/api/messages/${messageId}`, message);
+  return data;
+}
+
 const sendMessage = (data, body) => {
   socket.emit("new-message", {
     message: data.message,
@@ -106,6 +113,26 @@ export const postMessage = (body) => async (dispatch) => {
     sendMessage(data, body);
   } catch (error) {
     console.error(error);
+  }
+};
+
+export const updateMessageReadStatus = async (conversation) => {
+  
+  try {
+    let messages = conversation.messages;
+    let otherUserId = conversation.otherUser.id
+
+    for (let i=0; i<messages.length; i++) {
+      let message = messages[i]
+
+      if (message.senderId !== otherUserId){
+        break
+      } else {
+        markMessageAsRead(message)
+      }
+    }
+  } catch (error) {
+    console.log(error)
   }
 };
 

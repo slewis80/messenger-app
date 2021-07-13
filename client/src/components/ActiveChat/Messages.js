@@ -30,15 +30,30 @@ const Messages = (props) => {
   const { user, messages, otherUser, userId } = props;
   const classes = useStyles();
 
+  let recentMessage = messages[messages.length -1]
 
-  let sortedMessages = messages.sort((a, b) => (a.createdAt > b.createdAt) ? 1 : -1)
-  let recentMessage = sortedMessages[sortedMessages.length -1]
-  console.log(otherUser.photoUrl)
-  console.log(user)
+  let readReceipt = () => {
+    if (!recentMessage) {
+      return <div></div>
+    } else {
+      return  recentMessage.senderId === userId ?
+        <Box className={classes.seenBySelf}>
+          <Avatar className={classes.receiptPic}
+            src={otherUser.photoUrl}></Avatar> 
+        </Box> 
+        :
+        <Box className={classes.seenByOther}>
+          <Avatar className={classes.receiptPic}
+            src={user.photoUrl}></Avatar>
+        </Box>
+      
+
+    }
+  }
 
   return (
     <Box>
-      {sortedMessages.map((message) => {
+      {messages.map((message) => {
         const time = moment(message.createdAt).format("h:mm");
 
         return message.senderId === userId ? (
@@ -47,17 +62,7 @@ const Messages = (props) => {
           <OtherUserBubble key={message.id} text={message.text} time={time} otherUser={otherUser} />
         );
       })}
-        { recentMessage.senderId === userId ?
-          <Box className={classes.seenBySelf}>
-            <Avatar className={classes.receiptPic}
-              src={otherUser.photoUrl}></Avatar> 
-          </Box> 
-          :
-          <Box className={classes.seenByOther}>
-            <Avatar className={classes.receiptPic}
-              src={user.photoUrl}></Avatar>
-          </Box>
-        }
+      {readReceipt()}
     </Box>
   );
 };
