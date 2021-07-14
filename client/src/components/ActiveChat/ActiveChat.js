@@ -21,6 +21,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const ActiveChat = (props) => {
+
   const classes = useStyles();
   const { user } = props;
   const conversation = props.conversation || {};
@@ -36,6 +37,7 @@ const ActiveChat = (props) => {
           />
           <Box className={classes.chatContainer}>
             <Messages
+              conversation={conversation}
               messages={conversation.messages}
               otherUser={conversation.otherUser}
               userId={user.id}

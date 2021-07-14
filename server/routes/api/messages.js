@@ -14,7 +14,7 @@ router.post("/", async (req, res, next) => {
 
     // if we already know conversation id, we can save time and just add it to message and return
     if (conversationId) {
-      let conversation = await Conversation.findOne(
+      let conversation = await Conversation.findByPk(
         conversationId
       )
       // error if trying to post to someone else's conversation
@@ -55,20 +55,19 @@ router.post("/", async (req, res, next) => {
 });
 
 router.put("/:messageId", async (req, res, next) => {
+  console.log(req.body.id)
   try {
     if (!req.user) {
       return res.sendStatus(401);
     }
-    const readMessage = await Message.findOne({
-      where: {id: req.body.id}
-    })
-    let date = Date.now()
-    await Message.update({
-      updatedAt: date
-    }, {
-      where: {id: req.body.id}
-    })
-      console.log(readMessage.updatedAt)
+    await Message.update(
+      {messageRead: true},
+      {where: {id: req.body.id}}
+    ).then(res =>
+      console.log(res)
+    ).catch(error =>
+      console.log(error)
+    )
   } catch (error) {
     next(error)
   }

@@ -1,5 +1,5 @@
-import React from "react";
-import { Box, Typography } from "@material-ui/core";
+import React, { useState, useEffect } from "react";
+import { Box, Typography, Badge } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -40,8 +40,31 @@ const ChatContent = (props) => {
   const { conversation } = props;
   const { latestMessageText, otherUser } = conversation;
 
+  const [unreadMessages, setUnreadMessages] = useState([])
+
+  const countUnreadMessages = (messages) => {
+    messages.map(message => {
+      if (message.messageRead === false && message.senderId === otherUser.id) {
+        setUnreadMessages(unreadMessages.push(message.id))
+      } else {
+        setUnreadMessages(unreadMessages)
+      } return unreadMessages
+    })
+  }
+
+  const resetUnreadMessagesCount = () => {
+    setUnreadMessages([])
+  }
+
+ 
+  useEffect(() => {
+    countUnreadMessages(conversation.messages);
+  }, [latestMessageText])
+
+
   return (
-    <Box className={classes.root}>
+    <Box className={classes.root}
+      onClick={resetUnreadMessagesCount}>
       <Box>
         <Typography className={classes.username}>
           {otherUser.username}
@@ -49,6 +72,11 @@ const ChatContent = (props) => {
         <Typography className={classes.previewText}>
           {latestMessageText}
         </Typography>
+        <Badge
+          color="primary" 
+          style={{marginLeft: "200px"}}
+          badgeContent={unreadMessages.length}
+        />
       </Box>
     </Box>
   );

@@ -3,7 +3,7 @@ import store from "./store";
 import {
   setNewMessage,
   removeOfflineUser,
-  addOnlineUser,
+  addOnlineUser
 } from "./store/conversations";
 
 const socket = io(window.location.origin);

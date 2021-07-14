@@ -5,6 +5,7 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
+  addUnreadMessage,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -85,8 +86,8 @@ const saveMessage = async (body) => {
 
 const markMessageAsRead = async (message) => {
   let messageId = message.id
-  console.log(message)
   const { data } = await axios.put(`/api/messages/${messageId}`, message);
+  console.log(data)
   return data;
 }
 
@@ -103,6 +104,7 @@ const sendMessage = (data, body) => {
 export const postMessage = (body) => async (dispatch) => {
   try {
     const data = await saveMessage(body);
+    addUnreadMessage(data.message.id)
 
     if (!body.conversationId) {
       dispatch(addConversation(body.recipientId, data.message));
@@ -116,8 +118,7 @@ export const postMessage = (body) => async (dispatch) => {
   }
 };
 
-export const updateMessageReadStatus = async (conversation) => {
-  
+export const updateMessageReadStatus = (conversation) => {
   try {
     let messages = conversation.messages;
     let otherUserId = conversation.otherUser.id
@@ -126,7 +127,7 @@ export const updateMessageReadStatus = async (conversation) => {
       let message = messages[i]
 
       if (message.senderId !== otherUserId){
-        break
+        continue
       } else {
         markMessageAsRead(message)
       }

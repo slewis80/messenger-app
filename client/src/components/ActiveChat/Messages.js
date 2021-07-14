@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Avatar } from "@material-ui/core";
 import { SenderBubble, OtherUserBubble } from "../ActiveChat";
 import moment from "moment";
 import { makeStyles } from "@material-ui/core/styles";
+import { updateMessageReadStatus } from "../../store/utils/thunkCreators";
 
 
 const useStyles = makeStyles(() => ({
@@ -27,7 +28,7 @@ const useStyles = makeStyles(() => ({
 
 
 const Messages = (props) => {
-  const { user, messages, otherUser, userId } = props;
+  const { user, conversation, messages, otherUser, userId } = props;
   const classes = useStyles();
 
   let recentMessage = messages[messages.length -1]
@@ -38,18 +39,28 @@ const Messages = (props) => {
     } else {
       return  recentMessage.senderId === userId ?
         <Box className={classes.seenBySelf}>
-          <Avatar className={classes.receiptPic}
-            src={otherUser.photoUrl}></Avatar> 
+          { recentMessage.messageRead === true ?
+            <Avatar className={classes.receiptPic}
+            src={otherUser.photoUrl}></Avatar>
+          :
+            ""} 
         </Box> 
         :
         <Box className={classes.seenByOther}>
-          <Avatar className={classes.receiptPic}
+          { recentMessage.messageRead === true ?
+            <Avatar className={classes.receiptPic}
             src={user.photoUrl}></Avatar>
+          :
+            ""}
         </Box>
       
 
     }
   }
+
+  useEffect(() => {
+    updateMessageReadStatus(conversation);
+  }, [recentMessage])
 
   return (
     <Box>
