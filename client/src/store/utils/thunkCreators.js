@@ -5,7 +5,7 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
-  addUnreadMessage,
+  addUnreadMessages
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -50,6 +50,7 @@ export const login = (credentials) => async (dispatch) => {
     const { data } = await axios.post("/auth/login", credentials);
     await localStorage.setItem("messenger-token", data.token);
     dispatch(gotUser(data));
+    dispatch(addUnreadMessages());
     socket.emit("go-online", data.id);
   } catch (error) {
     console.error(error);
@@ -84,13 +85,6 @@ const saveMessage = async (body) => {
   return data;
 };
 
-const markMessageAsRead = async (message) => {
-  let messageId = message.id
-  const { data } = await axios.put(`/api/messages/${messageId}`, message);
-  console.log(data)
-  return data;
-}
-
 const sendMessage = (data, body) => {
   socket.emit("new-message", {
     message: data.message,
@@ -104,7 +98,6 @@ const sendMessage = (data, body) => {
 export const postMessage = (body) => async (dispatch) => {
   try {
     const data = await saveMessage(body);
-    addUnreadMessage(data.message.id)
 
     if (!body.conversationId) {
       dispatch(addConversation(body.recipientId, data.message));
@@ -118,20 +111,22 @@ export const postMessage = (body) => async (dispatch) => {
   }
 };
 
-export const updateMessageReadStatus = (conversation) => {
+export const updateMessageReadStatus = async (conversation) => {
   try {
-    let messages = conversation.messages;
-    let otherUserId = conversation.otherUser.id
+    const messages = conversation.messages;
+    const otherUserId = conversation.otherUser.id
+    let messagesToUpdate = []
 
-    for (let i=0; i<messages.length; i++) {
-      let message = messages[i]
-
-      if (message.senderId !== otherUserId){
-        continue
-      } else {
-        markMessageAsRead(message)
+    messages.forEach(message => {
+      if (message.senderId === otherUserId && !message.read){
+        messagesToUpdate.push(message)
       }
-    }
+    })
+
+    const { data } = await axios.put(`/api/messages/${conversation.id}`, messagesToUpdate);
+    messagesToUpdate = []
+    return data;
+  
   } catch (error) {
     console.log(error)
   }

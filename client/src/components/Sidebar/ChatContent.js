@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Badge } from "@material-ui/core";
+import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -17,6 +17,15 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 12,
     color: "#9CADC8",
     letterSpacing: -0.17,
+  },
+  previewTextNew: {
+    fontSize: 12,
+    color: "black",
+    letterSpacing: -0.17,
+    fontWeight: "bold",
+  },
+  badge: {
+
   },
   notification: {
     height: 20,
@@ -36,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ChatContent = (props) => {
   const classes = useStyles();
+  console.log(props)
 
   const { conversation } = props;
   const { latestMessageText, otherUser } = conversation;
@@ -44,8 +54,8 @@ const ChatContent = (props) => {
 
   const countUnreadMessages = (messages) => {
     messages.map(message => {
-      if (message.messageRead === false && message.senderId === otherUser.id) {
-        setUnreadMessages(unreadMessages.push(message.id))
+      if (!message.read && message.senderId === otherUser.id) {
+        setUnreadMessages(prevMessages => prevMessages + message.id)
       } else {
         setUnreadMessages(unreadMessages)
       } return unreadMessages
@@ -65,18 +75,23 @@ const ChatContent = (props) => {
   return (
     <Box className={classes.root}
       onClick={resetUnreadMessagesCount}>
-      <Box>
-        <Typography className={classes.username}>
-          {otherUser.username}
-        </Typography>
-        <Typography className={classes.previewText}>
-          {latestMessageText}
-        </Typography>
-        <Badge
-          color="primary" 
-          style={{marginLeft: "200px"}}
-          badgeContent={unreadMessages.length}
-        />
+      <Box className={classes.root}>
+        <Box>
+          <Typography className={classes.username}>
+            {otherUser.username}
+          </Typography>
+          <Typography className={unreadMessages.length > 0 ? classes.previewTextNew : classes.previewText}>
+            {latestMessageText}
+          </Typography>
+        </Box>
+        { unreadMessages.length > 0 ? 
+          <span
+            className={classes.notification}
+          >{unreadMessages.length}
+          </span>
+        :
+          ""
+        }
       </Box>
     </Box>
   );

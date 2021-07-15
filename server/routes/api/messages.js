@@ -14,7 +14,7 @@ router.post("/", async (req, res, next) => {
 
     // if we already know conversation id, we can save time and just add it to message and return
     if (conversationId) {
-      let conversation = await Conversation.findByPk(
+      const conversation = await Conversation.findByPk(
         conversationId
       )
       // error if trying to post to someone else's conversation
@@ -26,6 +26,7 @@ router.post("/", async (req, res, next) => {
         const message = await Message.create({ senderId, text, conversationId });
         return res.json({ message, sender });  
       }
+      
     }
     // if we don't have conversation id, find a conversation to make sure it doesn't already exist
     let conversation = await Conversation.findConversation(
@@ -54,20 +55,36 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.put("/:messageId", async (req, res, next) => {
-  console.log(req.body.id)
+
+// updating the message read status in a conversation
+router.put("/:conversationId", async (req, res, next) => {
   try {
     if (!req.user) {
       return res.sendStatus(401);
     }
-    await Message.update(
-      {messageRead: true},
-      {where: {id: req.body.id}}
-    ).then(res =>
-      console.log(res)
-    ).catch(error =>
-      console.log(error)
-    )
+    const senderId = req.user.id;
+    const conversationId = req.params.conversationId;
+    const messagesToUpdate = req.body;
+    const conversation = await Conversation.findByPk(conversationId)
+
+    // error if trying to post to someone else's conversation
+    if (conversation.user1Id != senderId && conversation.user2Id != senderId){
+      const error = new Error("Cannot update message read status for this conversation.")
+      res.status(403)
+      return next(error)
+    } else {
+      await messagesToUpdate.forEach(message => {
+        const messageId = message.id
+        Message.update(
+          {read: true},
+          {where: {id: messageId}}
+        ).then(res =>
+          console.log("Updated messages read")
+        ).catch(error =>
+          console.log(error)
+        ) 
+      })
+    }
   } catch (error) {
     next(error)
   }
