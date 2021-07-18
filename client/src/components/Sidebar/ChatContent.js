@@ -62,10 +62,6 @@ const ChatContent = (props) => {
     })
   }
 
-  const resetUnreadMessagesCount = () => {
-    setUnreadMessages([])
-  }
-
  
   useEffect(() => {
     countUnreadMessages(conversation.messages);
@@ -74,7 +70,7 @@ const ChatContent = (props) => {
 
   return (
     <Box className={classes.root}
-      onClick={resetUnreadMessagesCount}>
+      onClick={() => setUnreadMessages([])}>
       <Box className={classes.root}>
         <Box>
           <Typography className={classes.username}>
@@ -84,14 +80,11 @@ const ChatContent = (props) => {
             {latestMessageText}
           </Typography>
         </Box>
-        { unreadMessages.length > 0 ? 
+        { unreadMessages.length > 0 &&
           <span
             className={classes.notification}
           >{unreadMessages.length}
-          </span>
-        :
-          ""
-        }
+          </span>}
       </Box>
     </Box>
   );

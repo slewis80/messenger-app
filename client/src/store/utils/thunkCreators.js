@@ -50,7 +50,6 @@ export const login = (credentials) => async (dispatch) => {
     const { data } = await axios.post("/auth/login", credentials);
     await localStorage.setItem("messenger-token", data.token);
     dispatch(gotUser(data));
-    dispatch(addUnreadMessages());
     socket.emit("go-online", data.id);
   } catch (error) {
     console.error(error);
@@ -114,17 +113,8 @@ export const postMessage = (body) => async (dispatch) => {
 export const updateMessageReadStatus = async (conversation) => {
   try {
     const messages = conversation.messages;
-    const otherUserId = conversation.otherUser.id
-    let messagesToUpdate = []
 
-    messages.forEach(message => {
-      if (message.senderId === otherUserId && !message.read){
-        messagesToUpdate.push(message)
-      }
-    })
-
-    const { data } = await axios.put(`/api/messages/${conversation.id}`, messagesToUpdate);
-    messagesToUpdate = []
+    const { data } = await axios.put(`/api/messages/${conversation.id}`, messages);
     return data;
   
   } catch (error) {

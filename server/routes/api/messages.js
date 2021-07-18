@@ -77,13 +77,20 @@ router.put("/:conversationId", async (req, res, next) => {
         const messageId = message.id
         Message.update(
           {read: true},
-          {where: {id: messageId}}
-        ).then(res =>
-          console.log("Updated messages read")
-        ).catch(error =>
-          console.log(error)
-        ) 
+          {where: {
+            [Op.and]: 
+              {
+                id: messageId,
+                read: false,
+                senderId: {
+                  [Op.not]: req.user.id
+                }
+              }
+            }
+          } 
+        )
       })
+      res.sendStatus(204);
     }
   } catch (error) {
     next(error)

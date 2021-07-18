@@ -26,7 +26,6 @@ export const addMessageToStore = (state, payload) => {
 
 export const addUnreadMessagesToStore = (state) => {
   const unreadMessages = {};
-  console.log(state)
 
   state.forEach((convo) => {
     if (!convo.message.read) {

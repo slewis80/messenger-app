@@ -45,20 +45,23 @@ const useStyles = makeStyles(() => ({
 
 const SenderBubble = (props) => {
   const classes = useStyles();
-  const { time, text, otherUser, read } = props;
+  const { time, text, otherUser, read, sendersRecent } = props;
+
+  console.log(sendersRecent)
+
   return (
     <Box className={classes.root}>
       <Typography className={classes.date}>{time}</Typography>
       <Box className={classes.bubble}>
         <Typography className={classes.text}>{text}</Typography>
       </Box>
-      { read ?
+      { read && sendersRecent.text === text ?
         <Box className={classes.seenByOther}>
           <Avatar className={classes.receiptPic}
             src={otherUser.photoUrl} />
         </Box>
-        : 
-          "" }
+      :
+        ""}
     </Box>
   );
 };
