@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -18,6 +18,15 @@ const useStyles = makeStyles((theme) => ({
     color: "#9CADC8",
     letterSpacing: -0.17,
   },
+  previewTextNew: {
+    fontSize: 12,
+    color: "black",
+    letterSpacing: -0.17,
+    fontWeight: "bold",
+  },
+  badge: {
+
+  },
   notification: {
     height: 20,
     width: 20,
@@ -36,19 +45,46 @@ const useStyles = makeStyles((theme) => ({
 
 const ChatContent = (props) => {
   const classes = useStyles();
+  console.log(props)
 
   const { conversation } = props;
   const { latestMessageText, otherUser } = conversation;
 
+  const [unreadMessages, setUnreadMessages] = useState([])
+
+  const countUnreadMessages = (messages) => {
+    messages.map(message => {
+      if (!message.read && message.senderId === otherUser.id) {
+        setUnreadMessages(prevMessages => prevMessages + message.id)
+      } else {
+        setUnreadMessages(unreadMessages)
+      } return unreadMessages
+    })
+  }
+
+ 
+  useEffect(() => {
+    countUnreadMessages(conversation.messages);
+  }, [latestMessageText])
+
+
   return (
-    <Box className={classes.root}>
-      <Box>
-        <Typography className={classes.username}>
-          {otherUser.username}
-        </Typography>
-        <Typography className={classes.previewText}>
-          {latestMessageText}
-        </Typography>
+    <Box className={classes.root}
+      onClick={() => setUnreadMessages([])}>
+      <Box className={classes.root}>
+        <Box>
+          <Typography className={classes.username}>
+            {otherUser.username}
+          </Typography>
+          <Typography className={unreadMessages.length > 0 ? classes.previewTextNew : classes.previewText}>
+            {latestMessageText}
+          </Typography>
+        </Box>
+        { unreadMessages.length > 0 &&
+          <span
+            className={classes.notification}
+          >{unreadMessages.length}
+          </span>}
       </Box>
     </Box>
   );

@@ -24,6 +24,17 @@ export const addMessageToStore = (state, payload) => {
   });
 };
 
+export const addUnreadMessagesToStore = (state) => {
+  const unreadMessages = {};
+
+  state.forEach((convo) => {
+    if (!convo.message.read) {
+      unreadMessages.push(convo.message)
+    }
+  });
+  return unreadMessages;
+}
+
 export const addOnlineUserToStore = (state, id) => {
   return state.map((convo) => {
     if (convo.otherUser.id === id) {
