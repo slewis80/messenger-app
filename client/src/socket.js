@@ -1,4 +1,4 @@
-import io from "socket.io-client";
+import {io} from "socket.io-client";
 import store from "./store";
 import {
   setNewMessage,
@@ -6,10 +6,17 @@ import {
   addOnlineUser
 } from "./store/conversations";
 
-const socket = io(window.location.origin);
+const socket = io(window.location.origin, 
+  { autoConnect: false },
+  { transports: ["polling", "websocket"] }
+);
 
 socket.on("connect", () => {
   console.log("connected to server");
+
+  socket.on("connect_error", (err) => {
+    console.log(err.message);
+  });
 
   socket.on("add-online-user", (id) => {
     store.dispatch(addOnlineUser(id));

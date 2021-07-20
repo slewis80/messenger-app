@@ -5,7 +5,6 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
-  addUnreadMessages
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -38,7 +37,10 @@ export const register = (credentials) => async (dispatch) => {
     const { data } = await axios.post("/auth/register", credentials);
     await localStorage.setItem("messenger-token", data.token);
     dispatch(gotUser(data));
+    const username = data.username
     socket.emit("go-online", data.id);
+    socket.auth = {username};
+    socket.connect();
   } catch (error) {
     console.error(error);
     dispatch(gotUser({ error: error.response.data.error || "Server Error" }));
@@ -50,7 +52,10 @@ export const login = (credentials) => async (dispatch) => {
     const { data } = await axios.post("/auth/login", credentials);
     await localStorage.setItem("messenger-token", data.token);
     dispatch(gotUser(data));
+    const username = data.username
     socket.emit("go-online", data.id);
+    socket.auth = {username};
+    socket.connect();
   } catch (error) {
     console.error(error);
     dispatch(gotUser({ error: error.response.data.error || "Server Error" }));

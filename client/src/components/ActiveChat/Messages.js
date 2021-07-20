@@ -12,11 +12,11 @@ const Messages = (props) => {
   
   const [sendersRecent, setSendersRecent] = useState(recentMessage)
 
-  const messagesBySCurrentUser = []
+  const messagesByCurrentUser = [recentMessage]
 
   useEffect(() => {
     updateMessageReadStatus(conversation);
-    setSendersRecent(messagesBySCurrentUser[messagesBySCurrentUser.length -1]);
+    setSendersRecent(messagesByCurrentUser[messagesByCurrentUser.length -1]);
   }, [conversation, recentMessage])
 
   
@@ -26,15 +26,15 @@ const Messages = (props) => {
         const time = moment(message.createdAt).format("h:mm");
 
         if (message.read && message.senderId === userId) {
-          messagesBySCurrentUser.push(message);
+          messagesByCurrentUser.push(message);
         }
-        // messagesBySCurrentUser.sort((a,b) => a.id > b.id ? 1 : -1)
 
         return message.senderId === userId ? (
           <SenderBubble key={message.id} text={message.text} time={time} otherUser={otherUser}
              recentMessage={recentMessage} read={message.read} sendersRecent={sendersRecent} />
         ) : (
-          <OtherUserBubble key={message.id} text={message.text} time={time} otherUser={otherUser} />
+          <OtherUserBubble key={message.id} text={message.text} time={time} otherUser={otherUser} 
+            sendersRecent={sendersRecent} />
         );
       })}
     </Box>
