@@ -6,12 +6,11 @@ import {
   addOnlineUser
 } from "./store/conversations";
 
-const socket = io(window.location.origin, 
-  { autoConnect: false },
-  { transports: ["polling", "websocket"] }
-);
+const socket = io(window.location.origin,
+  { transports: ["polling"] },
+  { reconnectionAttempts: 5 });
 
-socket.on("connect", () => {
+socket.on("connection", () => {
   console.log("connected to server");
 
   socket.on("connect_error", (err) => {

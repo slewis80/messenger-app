@@ -36,17 +36,18 @@ const io = require("socket.io")(server, {
 });
 
 io.use((socket, next) => {
-  const user = socket.handshake.auth.username;
-  if (!user) {
+  const token = socket.handshake.auth.token;
+  if (!token) {
     next(new Error("thou shall not pass!"));
   } else {
-    socket.username = user;
+    socket.token = token;
     next();
   }
 });
 
 io.on("connection", (socket) => {
   socket.on("go-online", (id) => {
+    socket.user = id;
     if (!onlineUsers.includes(id)) {
       onlineUsers.push(id);
     }
@@ -59,7 +60,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("new-message", (data) => {
-    socket.broadcast.emit("new-message", {
+    const recipient = data.recipientId
+    socket.to(recipient).emit("new-message", {
       message: data.message,
       sender: data.sender,
     });
