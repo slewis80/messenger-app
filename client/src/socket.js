@@ -10,19 +10,18 @@ const socket = io(window.location.origin,
   { transports: ["polling"] },
   { reconnectionAttempts: 5 });
 
-socket.on("connection", () => {
-  console.log("connected to server");
+socket.on("connect", () => {
+    console.log("connected to server!");
+    console.log(socket.id)
 
-  socket.on("connect_error", (err) => {
-    console.log(err.message);
+  socket.on("add-online-user", (user) => {
+    const id = user.id;
+    const socketId = user.socketId;
+    store.dispatch(addOnlineUser(id, socketId));
   });
 
-  socket.on("add-online-user", (id) => {
-    store.dispatch(addOnlineUser(id));
-  });
-
-  socket.on("remove-offline-user", (id) => {
-    store.dispatch(removeOfflineUser(id));
+  socket.on("remove-offline-user", (user) => {
+    store.dispatch(removeOfflineUser(user));
   });
   
   socket.on("new-message", (data) => {
