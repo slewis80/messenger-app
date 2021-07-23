@@ -34,17 +34,18 @@ export const setNewMessage = (message, sender) => {
   };
 };
 
-export const addOnlineUser = (id) => {
+export const addOnlineUser = (id, socketId) => {
   return {
     type: ADD_ONLINE_USER,
     id,
+    socketId,
   };
 };
 
-export const removeOfflineUser = (id) => {
+export const removeOfflineUser = (user) => {
   return {
     type: REMOVE_OFFLINE_USER,
-    id,
+    user,
   };
 };
 
@@ -86,10 +87,10 @@ const reducer = (state = [], action) => {
     case ADD_UNREAD_MESSAGES:
       return addUnreadMessagesToStore(state);
     case ADD_ONLINE_USER: {
-      return addOnlineUserToStore(state, action.id);
+      return addOnlineUserToStore(state, action.id, action.socketId);
     }
     case REMOVE_OFFLINE_USER: {
-      return removeOfflineUserFromStore(state, action.id);
+      return removeOfflineUserFromStore(state, action.user);
     }
     case SET_SEARCHED_USERS:
       return addSearchedUsersToStore(state, action.users);
