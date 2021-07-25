@@ -68,10 +68,9 @@ router.get("/", async (req, res, next) => {
         convoJSON.otherUser.online = false;
       }
 
-      // set properties for notification count and latest message preview
       // sort messages so they appear at the bottom of the chat area
       convoJSON.messages.sort((a, b) => (a.createdAt > b.createdAt) ? 1 : -1)
-      convoJSON.latestMessageText = convoJSON.messages[convoJSON.messages.length -1].text;
+      convoJSON.latestMessageText = convoJSON.messages[convoJSON.messages.length -1].text
       conversations[i] = convoJSON;
     }
 
