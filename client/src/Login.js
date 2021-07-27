@@ -1,6 +1,9 @@
 import React from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
+import bubble from './assets/images/bubble.svg';
+import bgImg from './assets/images/bg-img.png';
+import { theme } from "./themes/theme";
 import {
   Grid,
   Box,
@@ -10,6 +13,7 @@ import {
   TextField,
   InputAdornment,
   makeStyles,
+  ThemeProvider,
 } from "@material-ui/core";
 import { login } from "./store/utils/thunkCreators";
 
@@ -26,7 +30,7 @@ const useStyles = makeStyles(() => ({
     padding: '10px 30px 10px 0px',
   },
   sidebar: {
-    backgroundImage: 'url(http://localhost:3000/assets/images/bg-img.png)',
+    backgroundImage: `url(${bgImg})`,
     backgroundRepeat: 'no-repeat',
     textAlign: 'center',
     width: '100%',
@@ -83,7 +87,7 @@ const Login = (props) => {
 
       <Grid item xs={false} sm={false} md={5} lg={5} className={classes.sidebar}>
         <Box className={classes.sidebarOverlay}>
-          <img src="http://localhost:3000/assets/images/bubble.svg" alt="chat bubble"
+          <img src={bubble} alt="chat bubble"
             className={classes.button} />
           <Typography variant="h4" className={classes.button}>
             Converse with anyone<br/>with any language
