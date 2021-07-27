@@ -19,7 +19,6 @@ const Messages = (props) => {
     setSendersRecent(messagesByCurrentUser[messagesByCurrentUser.length -1]);
   }, [conversation, recentMessage])
 
-  
   return (
     <Box>
       {messages.map((message) => {

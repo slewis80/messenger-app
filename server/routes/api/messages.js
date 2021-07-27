@@ -26,7 +26,6 @@ router.post("/", async (req, res, next) => {
         const message = await Message.create({ senderId, text, conversationId });
         return res.json({ message, sender });  
       }
-      
     }
     // if we don't have conversation id, find a conversation to make sure it doesn't already exist
     let conversation = await Conversation.findConversation(
@@ -54,7 +53,6 @@ router.post("/", async (req, res, next) => {
     next(error);
   }
 });
-
 
 // updating the message read status in a conversation
 router.put("/:conversationId", async (req, res, next) => {
