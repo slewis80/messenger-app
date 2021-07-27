@@ -3,7 +3,6 @@ import { Redirect, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import bubble from './assets/images/bubble.svg';
 import bgImg from './assets/images/bg-img.png';
-import { theme } from "./themes/theme";
 import {
   Grid,
   Box,
@@ -13,7 +12,6 @@ import {
   TextField,
   InputAdornment,
   makeStyles,
-  ThemeProvider,
 } from "@material-ui/core";
 import { login } from "./store/utils/thunkCreators";
 
