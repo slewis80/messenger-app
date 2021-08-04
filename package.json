@@ -43,9 +43,7 @@
     
       "start": "react-scripts start",
       "frontendtest": "cd client && react-scripts test",
-      "eject": "cd client && react-scripts eject",
-      "herokuserver": "cd server && npm run dev",
-      "herokufrontend": "cd client && npm start"
+      "eject": "cd client && react-scripts eject"
     },
     "eslintConfig": {
       "extends": "react-app"
