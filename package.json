@@ -2,6 +2,9 @@
     "homepage": "https://slewis-messenger-app.herokuapp.com/",
     "name": "messenger-app",
     "version": "0.1.0",
+    "engines": {
+        "node": "14.x"
+    },
     "private": true,
     "dependencies": {
         "connect-session-sequelize": "^7.0.4",
@@ -36,14 +39,11 @@
       "dev": "nodemon ./bin/www",
       "debug": "nodemon  --inspect ./bin/www",
       "servertest": "NODE_ENV=test ./node_modules/.bin/mocha --exit --timeout 30000",
-      "seed": "node db/seed.js",
+      "seed": "cd server && node db/seed.js",
     
       "start": "react-scripts start",
-      "predeploy": "npm run build",
-      "deploy": "gh-pages -d build",
-      "build": "react-scripts build",
-      "frontendtest": "react-scripts test",
-      "eject": "react-scripts eject",
+      "frontendtest": "cd client && react-scripts test",
+      "eject": "cd client && react-scripts eject",
       "herokuserver": "cd server && npm run dev",
       "herokufrontend": "cd client && npm start"
     },
